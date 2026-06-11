@@ -8,6 +8,7 @@
 	"scripts": {
 		"build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
 		"cdk": "cdk",
+		"bootstrap:db": "node scripts/bootstrap-db.js",
 		"test": "jest"
 	},
 	"devDependencies": {
