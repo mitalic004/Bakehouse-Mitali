@@ -137,7 +137,6 @@ export function postNewProductJourney() {
 }
 
 export function postNewOrderJourney() {
-	let randomNum = Math.floor(Math.random() * 1000)
 
 	group("post new order journey", () => {
 		simpleGetRequest(BASE_URL)
@@ -145,8 +144,8 @@ export function postNewOrderJourney() {
 		simplePostRequest(
 			`${BASE_URL}api/orders`,
 			{
-				customerId: 523,
-				items: [{ productId: randomNum, quantity: 1 }],
+				customerId: 1,
+				items: [{ productId: 1, quantity: 1 }],
 			},
 			`"status":"created"`,
 		)
