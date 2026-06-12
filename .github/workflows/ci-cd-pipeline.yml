@@ -12,9 +12,6 @@ permissions:
 
 env:
   BAKEHOUSE_STACK_NAME: mitali-chavan-bakehouse
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-  AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-2' }}
-  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -55,9 +52,8 @@ jobs:
       - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
-          role-session-name: gha-cdk-mitali-chavan-${{ github.run_id }}-${{ github.run_attempt }}
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: eu-west-2
 
       - name: Check AWS Identity
         run: aws sts get-caller-identity
@@ -71,7 +67,7 @@ jobs:
       - name: Bootstrap DB
         run: |
           aws lambda invoke \
-            --region ${{ env.AWS_REGION }} \
+            --region eu-west-2 \
             --function-name ${{ env.BAKEHOUSE_STACK_NAME}}-bootstrap-lambda \
             --cli-binary-format raw-in-base64-out \
             --payload "{}" \
