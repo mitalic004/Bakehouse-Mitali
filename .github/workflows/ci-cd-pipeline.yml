@@ -72,3 +72,48 @@ jobs:
             --cli-binary-format raw-in-base64-out \
             --payload "{}" \
             output.json
+
+  test:
+    name: Run Playwright & K6 Tests
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Project Dependencies
+        run: ./install.sh
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright Tests
+        continue-on-error: true
+        run: npm run test:e2e
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 10
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run Basic K6 Test
+        uses: grafana/run-k6-action@v1
+        with:
+          path: test/k6/basic-example.js
+      
+      - name: Run Scenario K6 Test
+        uses: grafana/run-k6-action@v1
+        with:
+          path: test/k6/scenario-example.js
